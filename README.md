@@ -1,5 +1,7 @@
-# Instruction
+# About
 You need to define TOKEN environment to set telegram bot token.
+
+Is just for fun!
 
 ## Requirements
 Python3
