@@ -10,6 +10,7 @@ import requests
 import json
 import os
 from random import randrange
+from datetime import datetime
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
@@ -52,42 +53,53 @@ def filter(update, context):
                                  text=f"Aqui teu porn do dia danado:\nhttps://beeg.com/{path}")
         logging.info("[%s] Enviando link porno" % usrRaw)
 
-    if msgRaw.find('chover') >= 0:
-        temp = clima()
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text=f"A temperatura hoje é de: {temp}")
+    if msgRaw.find('graus') or  msgRaw.find('chover') >= 0:
         logging.info("[%s] Enviando temperatura" % usrRaw)
+        temp = clima()
+
+        if temp < 30:
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                    text=f"Para Carioca, hoje ta um frio da porra: {temp}°C")
+        else:
+            context.bot.send_message(chat_id=update.message.chat_id,
+                                     text=f"Quente como seu rabo: {temp}°C")
 
 
 def clima():
     tempoToken = os.getenv('CLIMA', '131e182a78f3cd2a3a010a7a5dfdcfc1')
+    url = 'http://apiadvisor.climatempo.com.br'
     if not tempoToken:
         return 'Não sou adivinho demonio.\n(brinks, fatal o token).'
 
-    url = 'http://apiadvisor.climatempo.com.br'
+    cityId = getCity(url, tempoToken)
 
-    Id = cityId(url, tempoToken)
+    register = registryCity(cityId, tempoToken, url)
 
-    path2 = f'/api-manager/user-token/{tempoToken}/locales'
-    requests.put(url + path2, f'localeId[{Id}]')
+    if not register:
+        return 'Failed'
 
-    path = f'/api/v1/forecast/locale/{Id}/hours/72?token={tempoToken}'
+    path = '/api/v1/forecast/locale/%s/hours/72?token=%s' % (cityId, tempoToken)
     r = requests.get(url + path)
-    if r.status_code == 200:
-        data = r.content['data']
 
-        for info in data:
-            graus = info['temperature']['temperature']
-            return graus
+    if r.status_code == 200:
+
+        today = datetime.now()
+        now = today.strftime("%Y-%m-%d %H:00:00")
+
+        data = json.loads(r.content)['data']
+
+        temp = [i['temperature']['temperature'] for i in data if i['date'] == now]
+        return temp[0]
+
     else:
         return f"não deu: {r.content}"
 
 
-def cityId(url, token):
+def getCity(url, token):
     city = 'Rio de Janeiro'
     state = 'RJ'
 
-    path = f'/api/v1/locale/city?name={city}&state={state}&token={token}'
+    path = '/api/v1/locale/city?name=%s&state=%s&token=%s' % (city, state, token)
     r = requests.get(url + path)
 
     content = json.loads(r.content)[0]
@@ -95,8 +107,25 @@ def cityId(url, token):
     return content['id']
 
 
-def registryCity(id, url, token):
-    logging.info("Status %s" % r.status_code)
+def registryCity(cityid, token, url):
+    path2 = '/api-manager/user-token/%s/locales' % (token)
+
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+
+    data = {
+        'localeId[]': '%s' % cityid
+    }
+
+    r = requests.put(url + path2, headers=headers, data=data)
+
+    content = json.loads(r.content)['locales']
+
+    if content:
+        return int(content[0])
+    else:
+        return 'Failed'
 
 
 def beber():
