@@ -41,8 +41,8 @@ def filter(update, context):
 
     for boa in palabras:
         if msgRaw.find(boa) >= 0:
-            logging.info(f"Achei a palavra {boa}")
             msg = beber()
+            logging.info("[%s] Respondendo devido a palavra %s" % (usrRaw, boa))
             context.bot.send_message(chat_id=update.message.chat_id,
                                      text=f"Topo {boa}, {usrRaw}! {msg}")
 
@@ -57,8 +57,6 @@ def filter(update, context):
         context.bot.send_message(chat_id=update.message.chat_id,
                                  text=f"A temperatura hoje é de: {temp}")
         logging.info("[%s] Enviando temperatura" % usrRaw)
-
-    logging.info("[%s] Respondendo mensagem" % usrRaw)
 
 
 def clima():
