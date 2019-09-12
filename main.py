@@ -74,7 +74,7 @@ def filter(update, context):
 
 
 def clima():
-    tempoToken = os.getenv('CLIMA', '131e182a78f3cd2a3a010a7a5dfdcfc1')
+    tempoToken = os.getenv('CLIMA')
     url = 'http://apiadvisor.climatempo.com.br'
     if not tempoToken:
         return 'Não sou adivinho demonio.\n(brinks, fatal o token).'
