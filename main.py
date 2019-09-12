@@ -28,41 +28,49 @@ updater = Updater(token=botToken, use_context=True)
 
 dispatcher = updater.dispatcher
 
+thiagoInfo = ['beber', 'cheirar', 'putas', 'drugs', 'drogas', 'mulheres']
+climaInfo = ['graus', 'chover', 'temperatura', 'tempo', 'bom pra beber']
+pornInfo = ['porn', 'pornografia', 'pornô', 'sexy']
 
 def start(update, context):
     context.bot.send_message(chat_id=update.message.chat_id, text="Bando de nerd. To de olho em vocês")
     logging.info("Received message from %s" % str(update.message.from_user.first_name))
 
 
+def help(update, context):
+    context.bot.send_message(chat_id=update.message.chat_id, text="Pode falar: %s, %s ou %s" % (thiagoInfo, pornInfo, climaInfo))
+    logging.info("[%s] Pedido de ajuda" % str(update.message.from_user.first_name))
+
+
 def filter(update, context):
     msgRaw = str(update.message.text.lower())
     usrRaw = str(update.message.from_user.first_name)
 
-    palabras = ['beber', 'cheirar', 'putas', 'drugs', 'drogas', 'mulheres']
-
-    for boa in palabras:
-        if msgRaw.find(boa) >= 0:
+    for b in thiagoInfo:
+        if msgRaw.find(b) >= 0:
             msg = beber()
-            logging.info("[%s] Respondendo devido a palavra %s" % (usrRaw, boa))
+            logging.info("[%s] Respondendo devido a palavra %s" % (usrRaw, b))
             context.bot.send_message(chat_id=update.message.chat_id,
-                                     text=f"Topo {boa}, {usrRaw}! {msg}")
+                                     text=f"Topo {b}, {usrRaw}! {msg}")
 
-    if msgRaw.find('porn') >= 0:
-        path = randrange(9999999999)
-        context.bot.send_message(chat_id=update.message.chat_id,
-                                 text=f"Aqui teu porn do dia danado:\nhttps://beeg.com/{path}")
-        logging.info("[%s] Enviando link porno" % usrRaw)
-
-    if msgRaw.find('graus') or  msgRaw.find('chover') >= 0:
-        logging.info("[%s] Enviando temperatura" % usrRaw)
-        temp = clima()
-
-        if temp < 30:
+    for p in pornInfo:
+        if msgRaw.find(p) >= 0:
+            path = randrange(9999999999)
             context.bot.send_message(chat_id=update.message.chat_id,
-                                    text=f"Para Carioca, hoje ta um frio da porra: {temp}°C")
-        else:
-            context.bot.send_message(chat_id=update.message.chat_id,
-                                     text=f"Quente como seu rabo: {temp}°C")
+                                     text=f"Aqui teu porn do dia danado:\nhttps://beeg.com/{path}")
+            logging.info("[%s] Enviando link porno" % usrRaw)
+
+    for t in climaInfo:
+        if msgRaw.find(t) >= 0:
+            logging.info("[%s] Enviando temperatura" % usrRaw)
+            temp = clima()
+
+            if temp < 30:
+                context.bot.send_message(chat_id=update.message.chat_id,
+                                        text=f"O tempo pra Carioca ta um frio da porra: {temp}°C")
+            else:
+                context.bot.send_message(chat_id=update.message.chat_id,
+                                         text=f"O tempo ta quente como seu rabo: {temp}°C")
 
 
 def clima():
@@ -138,6 +146,9 @@ def mulher():
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
+
+help_handler = CommandHandler('help', help)
+dispatcher.add_handler(help_handler)
 
 filter_handler = MessageHandler(Filters.text, filter)
 dispatcher.add_handler(filter_handler)
