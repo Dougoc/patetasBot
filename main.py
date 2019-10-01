@@ -29,7 +29,7 @@ updater = Updater(token=botToken, use_context=True)
 dispatcher = updater.dispatcher
 
 thiagoInfo = ['beber', 'cheirar', 'putas', 'drugs', 'drogas', 'mulheres']
-climaInfo = ['graus', 'chover', 'temperatura', 'tempo', 'bom pra beber']
+climaInfo = ['graus', 'chover', 'temperatura', 'tempo', 'bom pra beberkkk']
 pornInfo = ['porn', 'pornografia', 'pornô', 'sexy']
 
 def start(update, context):
