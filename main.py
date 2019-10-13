@@ -62,7 +62,7 @@ def filter(update, context):
 
     for t in climaInfo:
         if msgRaw.find(t) >= 0:
-            logging.info("[%s] Enviando temperatura" % usrRaw)
+            logging.info("[%s] Enviando temperatura doido" % usrRaw)
             temp = clima()
 
             if temp < 30:
@@ -137,7 +137,7 @@ def registryCity(cityid, token, url):
 
 
 def beber():
-    return "Mas Thiago não vai"
+    return "Mas LEoh não vai"
 
 
 def mulher():
