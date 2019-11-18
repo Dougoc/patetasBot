@@ -65,19 +65,24 @@ def filter(update, context):
             logging.info("[%s] Enviando temperatura" % usrRaw)
             temp = clima()
 
-            if temp < 30:
-                context.bot.send_message(chat_id=update.message.chat_id,
-                                        text=f"O tempo pra Carioca ta um frio da porra: {temp}°C")
+            if isinstance(temp, int):
+
+                if temp <= 30:
+                    context.bot.send_message(chat_id=update.message.chat_id,
+                                            text=f"O tempo pra Carioca ta um frio da porra: {temp}°C")
+                else:
+                    context.bot.send_message(chat_id=update.message.chat_id,
+                                             text=f"O tempo ta quente como seu rabo: {temp}°C")
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
-                                         text=f"O tempo ta quente como seu rabo: {temp}°C")
+                                         text=f"{temp}")
 
 
 def clima():
     tempoToken = os.getenv('CLIMA')
     url = 'http://apiadvisor.climatempo.com.br'
     if not tempoToken:
-        return 'Não sou adivinho demonio.\n(brinks, fatal o token).'
+        return 'Não sou adivinho demonio (brinks, fatal o token).'
 
     cityId = getCity(url, tempoToken)
 
@@ -97,7 +102,7 @@ def clima():
         data = json.loads(r.content)['data']
 
         temp = [i['temperature']['temperature'] for i in data if i['date'] == now]
-        return temp[0]
+        return int(temp[0])
 
     else:
         return f"não deu: {r.content}"
