@@ -137,7 +137,7 @@ def registryCity(cityid, token, url):
 
 
 def beber():
-    return "Mas LEoh não vai"
+    return "Agora Thiago vai tbm"
 
 
 def mulher():
