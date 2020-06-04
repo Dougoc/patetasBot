@@ -69,10 +69,10 @@ def filter(update, context):
 
                 if temp <= 30:
                     context.bot.send_message(chat_id=update.message.chat_id,
-                                            text=f"O tempo pra Carioca ta um frio da porra: {temp}°C")
+                                            text=f"O tempo pra Carioca ta um frio da porra: {temp}°C (e pra dar uma surra no gerson e no leo no naruto)")
                 else:
                     context.bot.send_message(chat_id=update.message.chat_id,
-                                             text=f"O tempo ta quente como seu rabo: {temp}°C")
+                                             text=f"O tempo ta quente como seu rabo: {temp}°C ")
             else:
                 context.bot.send_message(chat_id=update.message.chat_id,
                                          text=f"{temp}")
